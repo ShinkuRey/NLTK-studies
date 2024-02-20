@@ -19,6 +19,14 @@ def read_file(filename, param,  measure=None, param2=None):
             res = text
 
 
+        max_length = 0
+        max_length_word =""
+        
+        for word in res:
+            if len(word) > max_length:
+                max_length = len(word)
+                max_length_word = word
+
         punct_remove = str.maketrans('', '', string.punctuation)
         res = [w.translate(punct_remove) for w in res]
         res = [w.lower() for w in res]
@@ -30,6 +38,8 @@ def read_file(filename, param,  measure=None, param2=None):
             elif measure == "unique":
                 return len(set(res))
             
+            elif measure == "max_length_word":
+                return max_length_word
             
             elif param2 is not None and measure == "compare":
                 if param2 == "word":
