@@ -29,7 +29,7 @@ def read_file(filename, param,  measure=None, param2=None):
             
             elif measure == "unique":
                 return len(set(res))
-            
+    
             
             elif param2 is not None and measure == "compare":
                 if param2 == "word":
