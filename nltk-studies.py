@@ -3,6 +3,7 @@ nltk.download('punkt')
 import string
 
 
+
 from nltk.tokenize import sent_tokenize, word_tokenize
 
 
@@ -60,9 +61,9 @@ def read_file(filename, param,  measure=None, param2=None):
 
 
         return res
-        
 
-res = read_file("file.txt", "raw",  "compare", "word")
+
+res = read_file("file.txt", "sent",  "compare", "word")
 
 
 
