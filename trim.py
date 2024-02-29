@@ -308,41 +308,42 @@
 # else:
 #         print(False)
 
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
+import sys
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLabel
 
-class MainWindow(QMainWindow):
+class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Main Window")
 
-        # Создание виджетов
-        self.left_menu_widget = QWidget()
-        self.main_content_widget = QWidget()
+        self.setWindowTitle("Nested Layouts Example")
+        self.resize(400, 300)
 
-        # Создание левого бокового меню
-        self.left_menu_layout = QVBoxLayout(self.left_menu_widget)
-        self.left_menu_layout.addWidget(QPushButton("File 1"))
-        self.left_menu_layout.addWidget(QPushButton("File 2"))
-        # Добавьте другие кнопки для файлов по вашему усмотрению
+        # Main layout
+        main_layout = QVBoxLayout(self)
 
-        # Создание основного контента
-        self.main_content_layout = QVBoxLayout(self.main_content_widget)
-        self.main_content_label = QLabel("Добавьте файлы")
-        self.main_content_layout.addWidget(self.main_content_label)
+        # Sub-layout
+        sub_layout = QHBoxLayout()
 
-        # Размещение виджетов на главном окне
-        main_layout = QHBoxLayout()
-        main_layout.addWidget(self.left_menu_widget)
-        main_layout.addWidget(self.main_content_widget)
+        # Widgets for the sub-layout
+        button1 = QPushButton("Button 1")
+        button2 = QPushButton("Button 2")
+        label = QLabel("Label")
 
-        central_widget = QWidget()
-        central_widget.setLayout(main_layout)
-        self.setCentralWidget(central_widget)
+        # Add widgets to the sub-layout
+        sub_layout.addWidget(button1)
+        sub_layout.addWidget(button2)
 
-        # Подключение сигналов и слотов (если необходимо)
+        # Add the sub-layout to the main layout
+        main_layout.addLayout(sub_layout)
 
-if __name__ == "__main__":
-    app = QApplication([])
+        # Add more widgets directly to the main layout
+        main_layout.addWidget(label)
+
+def main():
+    app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
-    app.exec()
+    sys.exit(app.exec())
+
+if __name__ == "__main__":
+    main()

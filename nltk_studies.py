@@ -1,8 +1,14 @@
 import nltk
 import string
 
+import io
+import numpy as np
+from PIL import Image
+
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+
+from collections import Counter
 
 from nltk.collocations import BigramAssocMeasures, BigramCollocationFinder
 
@@ -23,21 +29,26 @@ This code snippet defines several functions related to text analysis using the N
 Note: The code snippet also imports necessary modules and downloads the required NLTK resources.
 """
 
-def read_file(filename, remove_punctuation=True):
+def read_file(filename):
     with open(filename, "r", encoding="utf-8") as file:
         text = file.read()
 
-        if remove_punctuation:
-            punctuation = string.punctuation + "”“’»«—"
-            translator = str.maketrans('', '', punctuation)
-            raw_text = text.translate(translator).lower()
+        punctuation = string.punctuation + "”“’»«—"
+        translator = str.maketrans('', '', punctuation)
+        raw_text = text.translate(translator).lower()
 
         
-        stop_words = set(stopwords.words(["english", "russian"]))
-        word_tokens = [word for word in word_tokenize(raw_text) if word not in stop_words and word.isalpha()]
-        sent_tokens = sent_tokenize(raw_text)
+        english_stopwords = set(stopwords.words("english"))
+        russian_stopwords = set(stopwords.words("russian"))
 
-        return raw_text, word_tokens, sent_tokens
+        stop_words = english_stopwords.union(russian_stopwords)
+
+        word_tokens_wsw = [word for word in word_tokenize(raw_text) if word not in stop_words and word.isalpha()]
+        word_tokens = word_tokenize(raw_text)
+        sent_tokens = sent_tokenize(text)
+        print(len(sent_tokens))
+        return raw_text, word_tokens, sent_tokens, word_tokens_wsw
+
 
 def max_length(word_tokens):
     max_length = 0
@@ -61,33 +72,51 @@ def token_number(s):
     return len(s)
 
 def average_words_length(word_tokens, raw_text):
-    return round(len(raw_text) / len(word_tokens), 2)
+    num = round(len(raw_text) / len(word_tokens), 2)
+    return num
 
 def average_sent_length(sent_tokens, raw_text):
-    return round(len(raw_text) / len(sent_tokens), 2)
+    num = round(len(raw_text) / len(sent_tokens), 2)
+    return num
 
 def average_words_sent(word_tokens, sent_tokens):
-    return round(len(word_tokens) / len(sent_tokens), 2)
+    num = round(len(word_tokens) / len(sent_tokens), 2)
+    return num
 
 
-def word_cloud(raw_text):
-    wordcloud = WordCloud(width=800, height=400, background_color="white").generate(raw_text)
-    plt.figure(figsize=(10, 5))
+def word_cloud(word_tokens):
+    text = " ".join(word_tokens)
+    wordcloud = WordCloud(width=400, height=200, background_color="white").generate(text)
+    plt.figure(figsize=(5, 2.5))
     plt.imshow(wordcloud, interpolation="bilinear")
     plt.axis("off")
-    plt.show()
+    buf = io.BytesIO()
+    plt.savefig(buf, format="png")
+    buf.seek(0)
+    img = Image.open(buf)
 
+    word_counts = Counter(word_tokens)
+
+    words_list = []
+
+    for word, count in word_counts.items():
+        words_list.append((word, count))
+
+    sorted_list = sorted(words_list, key = lambda x: x[1], reverse=True)
+
+    return img, sorted_list[:30]
 
 def collocations(word_tokens, num=20):
     finder = BigramCollocationFinder.from_words(word_tokens)
     collocations_counts = {}
     for bigram, freq in finder.ngram_fd.items():
         collocations_counts[bigram] = freq
-    
+    collocations_list = []
     sorted_collocations = dict(sorted(collocations_counts.items(), key=lambda item: item[1], reverse=True))
     for i, (bigram, freq) in enumerate(sorted_collocations.items()):
         if i < num:
-            print(bigram, freq)
+            collocations_list.append((bigram, freq))
         else:
             break
-
+    
+    return collocations_list
