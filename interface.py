@@ -18,7 +18,14 @@ class MainWindow(QWidget):
         self.resize(1000, 800)
         self.center()
 
-        layout = QVBoxLayout()
+        
+
+        leftSideSelector = QVBoxLayout()
+
+        
+
+
+
 
         self.label = QLabel("Drop file here or click to select")
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)

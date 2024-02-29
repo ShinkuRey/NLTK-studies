@@ -308,3 +308,41 @@
 # else:
 #         print(False)
 
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Main Window")
+
+        # Создание виджетов
+        self.left_menu_widget = QWidget()
+        self.main_content_widget = QWidget()
+
+        # Создание левого бокового меню
+        self.left_menu_layout = QVBoxLayout(self.left_menu_widget)
+        self.left_menu_layout.addWidget(QPushButton("File 1"))
+        self.left_menu_layout.addWidget(QPushButton("File 2"))
+        # Добавьте другие кнопки для файлов по вашему усмотрению
+
+        # Создание основного контента
+        self.main_content_layout = QVBoxLayout(self.main_content_widget)
+        self.main_content_label = QLabel("Добавьте файлы")
+        self.main_content_layout.addWidget(self.main_content_label)
+
+        # Размещение виджетов на главном окне
+        main_layout = QHBoxLayout()
+        main_layout.addWidget(self.left_menu_widget)
+        main_layout.addWidget(self.main_content_widget)
+
+        central_widget = QWidget()
+        central_widget.setLayout(main_layout)
+        self.setCentralWidget(central_widget)
+
+        # Подключение сигналов и слотов (если необходимо)
+
+if __name__ == "__main__":
+    app = QApplication([])
+    window = MainWindow()
+    window.show()
+    app.exec()
