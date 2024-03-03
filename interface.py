@@ -20,7 +20,7 @@ class MainWindow(QWidget):
         )
 
         self.setStyleSheet(main_style)
-        self.resize(1000, 800)
+        self.resize(1500, 800)
         self.center()
 
 
@@ -97,6 +97,7 @@ class MainWindow(QWidget):
             file_name = QFileInfo(file).fileName()
             file_button = QPushButton(file_name)
             self.left_menu_layout.addWidget(file_button)
+            file_button.clicked.connect(lambda _, path=file_name: self.analyze(file_name)) 
 
 
     
@@ -158,7 +159,7 @@ class MainWindow(QWidget):
 
         self.center_results_layout.addWidget(QLabel(f"Самые часто используемые каллокации:"))
         for collocation in sorted_collocations:
-            label_text = f"{collocation[0]}: {collocation[1]}"  # Assuming each item is a tuple of two elements
+            label_text = f"{collocation[0]}: {collocation[1]}"
             label = QLabel(label_text)
             self.center_results_layout.addWidget(label)
 

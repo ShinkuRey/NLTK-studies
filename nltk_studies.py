@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from collections import Counter
 
 from nltk.collocations import BigramAssocMeasures, BigramCollocationFinder
+from nltk.stem import WordNetLemmatizer
 
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize, word_tokenize
@@ -33,15 +34,15 @@ def read_file(filename):
     with open(filename, "r", encoding="utf-8") as file:
         text = file.read()
 
-        punctuation = string.punctuation + "”“’»«—"
-        translator = str.maketrans('', '', punctuation)
-        raw_text = text.translate(translator).lower()
-
-        
+        lemmatizator = WordNetLemmatizer()
         english_stopwords = set(stopwords.words("english"))
         russian_stopwords = set(stopwords.words("russian"))
-
         stop_words = english_stopwords.union(russian_stopwords)
+        punctuation = string.punctuation + "”“’»«—"
+        translator = str.maketrans('', '', punctuation)
+
+        raw_text = text.translate(translator).lower()
+
 
         word_tokens_wsw = [word for word in word_tokenize(raw_text) if word not in stop_words and word.isalpha()]
         word_tokens = word_tokenize(raw_text)
