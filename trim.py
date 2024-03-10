@@ -308,42 +308,30 @@
 # else:
 #         print(False)
 
-import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLabel
+import nltk
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
 
-class MainWindow(QWidget):
-    def __init__(self):
-        super().__init__()
+# Download WordNet corpus (needed for lemmatization)
+nltk.download('wordnet')
 
-        self.setWindowTitle("Nested Layouts Example")
-        self.resize(400, 300)
+def lemmatize_text(text):
+    # Tokenize the text into words
+    tokens = word_tokenize(text)
+    
+    # Initialize lemmatizer
+    lemmatizer = WordNetLemmatizer()
+    
+    # Lemmatize each word in the text
+    lemmatized_tokens = [lemmatizer.lemmatize(word) for word in tokens]
+    
+    # Join the lemmatized tokens back into text
+    lemmatized_text = ' '.join(lemmatized_tokens)
+    
+    return lemmatized_text
 
-        # Main layout
-        main_layout = QVBoxLayout(self)
-
-        # Sub-layout
-        sub_layout = QHBoxLayout()
-
-        # Widgets for the sub-layout
-        button1 = QPushButton("Button 1")
-        button2 = QPushButton("Button 2")
-        label = QLabel("Label")
-
-        # Add widgets to the sub-layout
-        sub_layout.addWidget(button1)
-        sub_layout.addWidget(button2)
-
-        # Add the sub-layout to the main layout
-        main_layout.addLayout(sub_layout)
-
-        # Add more widgets directly to the main layout
-        main_layout.addWidget(label)
-
-def main():
-    app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec())
-
-if __name__ == "__main__":
-    main()
+# Example usage
+text = "The cats are chasing mice and playing in the garden"
+lemmatized_text = lemmatize_text(text)
+print("Original text:", text)
+print("Lemmatized text:", lemmatized_text)

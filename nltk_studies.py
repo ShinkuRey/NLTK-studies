@@ -1,4 +1,3 @@
-import nltk
 import string
 
 import io
@@ -8,6 +7,8 @@ from PIL import Image
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
+
+
 from collections import Counter
 
 from nltk.collocations import BigramAssocMeasures, BigramCollocationFinder
@@ -15,6 +16,10 @@ from nltk.stem import WordNetLemmatizer
 
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize, word_tokenize
+
+from nltk.tag import pos_tag
+import pymorphy3
+
 
 """
 This code snippet defines several functions related to text analysis using the NLTK library. The functions include:
@@ -34,17 +39,33 @@ def read_file(filename):
     with open(filename, "r", encoding="utf-8") as file:
         text = file.read()
 
+        
+
         lemmatizator = WordNetLemmatizer()
         english_stopwords = set(stopwords.words("english"))
         russian_stopwords = set(stopwords.words("russian"))
         stop_words = english_stopwords.union(russian_stopwords)
+        
+        stop_words.update(["это", "который", "год", "ещё"])
+
+
         punctuation = string.punctuation + "”“’»«—"
         translator = str.maketrans('', '', punctuation)
 
         raw_text = text.translate(translator).lower()
+        
+        word_tokens_a = [word for word in word_tokenize(raw_text)]
 
+        morph = pymorphy3.MorphAnalyzer()
 
-        word_tokens_wsw = [word for word in word_tokenize(raw_text) if word not in stop_words and word.isalpha()]
+        word_tokens_wsw = []
+
+        for token in word_tokens_a:
+            word_tokens_wsw.append(morph.parse(token)[0].normal_form)
+        
+        word_tokens_wsw = [word for word in word_tokens_wsw if word not in stop_words and word.isalpha()]
+                
+
         word_tokens = word_tokenize(raw_text)
         sent_tokens = sent_tokenize(text)
         print(len(sent_tokens))
